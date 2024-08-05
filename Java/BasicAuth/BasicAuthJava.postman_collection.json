@@ -1,0 +1,62 @@
+{
+	"info": {
+		"_postman_id": "6f37b68e-ac21-40f1-9a32-d7fc50076dcf",
+		"name": "BasicAuthJava",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34215646"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8090/java/basicAuth/submit",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "asdf123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "testUser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Abc",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"max\",\r\n    \"department\": \"IT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/java/basicAuth/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"java",
+						"basicAuth",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
