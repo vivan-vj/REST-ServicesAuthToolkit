@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * The Class MyRestController.
  */
 @RestController
-@RequestMapping("/java/rs")
+@RequestMapping("/java/basicAuth/")
 @Slf4j
 public class MyRestController {
 
@@ -28,7 +28,7 @@ public class MyRestController {
 	 * @param requestObj the request obj
 	 * @return the response entity
 	 */
-	@PostMapping(value="/submit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value="submit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseObj> submit(@RequestBody RequestObj requestObj) {
 		ResponseObj responseObj = new ResponseObj();
 		log.info("Date Received from Request : "+requestObj.toString());

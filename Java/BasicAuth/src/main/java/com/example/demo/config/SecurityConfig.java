@@ -1,45 +1,55 @@
 package com.example.demo.config;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * The Class SecurityConfig.
- */
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter  {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	/** The security request filter. */
-	@Autowired
-	private SecurityRequestFilter securityRequestFilter;
 
-	/**
-	 * Configure.
-	 *
-	 * @param http the http
-	 * @throws Exception the exception
-	 */
+	private SecurityRequestFilter getSecurityRequestFilter() {
+		try {
+			return new SecurityRequestFilter(userDetailsServiceBean(), authenticationManager());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
 	@Override
-	protected void configure( HttpSecurity http ) throws Exception {		
-		http.headers().contentSecurityPolicy("default-src 'self'");		
+	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.cors().and()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		.csrf().disable()
 		.authorizeRequests()
-		.anyRequest().authenticated().and()
-		.addFilterBefore(securityRequestFilter, UsernamePasswordAuthenticationFilter.class );
+		.anyRequest().authenticated()
+		.and()
+		.addFilterBefore(getSecurityRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Bean
+	public UserDetailsService userDetailsServiceBean() {
+		return new InMemoryUserDetailsManager(
+				User.withUsername("testUser")
+				.password("{noop}asdf123")
+				.roles("USER")
+				.build()
+				);
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		UserDetailsService user= userDetailsServiceBean();
+		auth.inMemoryAuthentication().withUser(user.loadUserByUsername("testUser"));
 	}
 
 }
