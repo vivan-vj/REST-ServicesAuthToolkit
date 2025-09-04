@@ -1,55 +1,55 @@
 package com.example.demo.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@SuppressWarnings("deprecation")
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
+    private final AuthenticationConfiguration authenticationConfiguration;
 
-	private SecurityRequestFilter getSecurityRequestFilter() {
-		try {
-			return new SecurityRequestFilter(userDetailsServiceBean(), authenticationManager());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+        this.authenticationConfiguration = authenticationConfiguration;
+    }
 
+    private SecurityRequestFilter getSecurityRequestFilter() {
+        try {
+            return new SecurityRequestFilter(userDetailsServiceBean(), authenticationManager(authenticationConfiguration));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-		.csrf().disable()
-		.authorizeRequests()
-		.anyRequest().authenticated()
-		.and()
-		.addFilterBefore(getSecurityRequestFilter(), UsernamePasswordAuthenticationFilter.class);
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .addFilterBefore(getSecurityRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
-	@Bean
-	public UserDetailsService userDetailsServiceBean() {
-		return new InMemoryUserDetailsManager(
-				User.withUsername("testUser")
-				.password("{noop}asdf123")
-				.roles("USER")
-				.build()
-				);
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		UserDetailsService user= userDetailsServiceBean();
-		auth.inMemoryAuthentication().withUser(user.loadUserByUsername("testUser"));
-	}
-
+    @Bean
+    public UserDetailsService userDetailsServiceBean() {
+        return new InMemoryUserDetailsManager(
+                User.withUsername("testUser")
+                        .password("{noop}asdf123")
+                        .roles("USER")
+                        .build()
+        );
+    }
 }
