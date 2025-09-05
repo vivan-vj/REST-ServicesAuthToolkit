@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * The type Jwt service util.
+ *
+ * @author Vivek Jadhav
+ */
 @Component
 public class JwtServiceUtil {
     @Value("${jwt.secret:}")
@@ -31,6 +36,15 @@ public class JwtServiceUtil {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Generate token string.
+     *
+     * @param username  the username
+     * @param password  the password
+     * @param domain    the domain
+     * @param groupCode the group code
+     * @return the string
+     */
     public String generateToken(String username, String password, String domain, String groupCode) {
         // Validate credentials against configured values
         if (!this.userName.equals(username) || !this.password.equals(password)
@@ -45,10 +59,21 @@ public class JwtServiceUtil {
                 .compact();
     }
 
+    /**
+     * Gets expiration time.
+     *
+     * @return the expiration time
+     */
     public long getExpirationTime() {
         return expiration;
     }
 
+    /**
+     * Extract username string.
+     *
+     * @param token the token
+     * @return the string
+     */
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secret.getBytes())
@@ -58,11 +83,27 @@ public class JwtServiceUtil {
                 .getSubject();
     }
 
+    /**
+     * Validate token boolean.
+     *
+     * @param token the token
+     * @return the boolean
+     */
     public boolean validateToken(String token) {
-        String extractedUsername = extractUsername(token);
-        return (this.userName.equals(extractedUsername) && !isTokenExpired(token));
+        try {
+            String extractedUsername = extractUsername(token);
+            return (this.userName.equals(extractedUsername) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
+    /**
+     * Gets user details.
+     *
+     * @param username the username
+     * @return the user details
+     */
     public UserDetails getUserDetails(String username) {
         return org.springframework.security.core.userdetails.User
                 .withUsername(username)
@@ -75,6 +116,12 @@ public class JwtServiceUtil {
                 .build();
     }
 
+    /**
+     * Checks if the given JWT token is expired.
+     *
+     * @param token the JWT token to check
+     * @return true if the token is expired, false otherwise
+     */
     private boolean isTokenExpired(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secret.getBytes())
