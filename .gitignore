@@ -46,3 +46,5 @@
 /Java/JwtAuth/target/test-classes/com/example/demo/controllers/JwtServiceRestControllerTest.class
 /Java/JwtAuth/target/test-classes/com/example/demo/service/CustomerServiceTest.class
 /Java/JwtAuth/target/test-classes/com/example/demo/service/JwtServiceUtilTest.class
+/Java/JwtAuth/target/JwtAuthRestService.jar
+/Java/JwtAuth/target/JwtAuthRestService.jar.original

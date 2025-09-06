@@ -100,6 +100,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>JwtAuthRestService</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
