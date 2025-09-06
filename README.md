@@ -1,8 +1,8 @@
 
 # REST-Services-AuthToolkit
 
-- 1. BasicAuth (REST Services using Basic-Authentication) 
-- 2. JwtAuth (REST Services using JWT Authentication)
+-  BasicAuth (REST Services using Basic-Authentication) 
+-  JwtAuth (REST Services using JWT Authentication)
 
 # BasicAuth 
 This is a Spring Boot-based REST service that demonstrates basic authentication and security configurations. The project includes a simple controller, security setup, and utility classes to handle authentication and request processing.
@@ -39,14 +39,14 @@ cd REST-ServicesAuthToolkit/Java/JwtAuth
 
 ## Build the Project
 
-- **mvn clean install**
+- mvn clean install
 
 ## Run the Application
 
 For BasicAuth REST Service
-- **java -jar target/BasicAuthRestService.jar** 
+- java -jar target/BasicAuthRestService.jar
 
 For JwtAuth REST service
-- **java -jar target/JwtAuthRestService.jar** 
+- java -jar target/JwtAuthRestService.jar
 
 
